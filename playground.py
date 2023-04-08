@@ -24,7 +24,9 @@ def get_num_api_calls(df, timestamp, ip_address):
 
     # Get the dataframe of api calls within the 5 minutes
     df_5min = df[
-        (df_copy["timestamp"] >= min_timestamp) & (df_copy["timestamp"] <= dt_timestamp) & (df_copy["ip_address"] == ip_address)
+        (df_copy["timestamp"] >= min_timestamp)
+        & (df_copy["timestamp"] <= dt_timestamp)
+        & (df_copy["ip_address"] == ip_address)
     ]
     return len(df_5min)
 
@@ -66,7 +68,10 @@ class NginxAI(object):
         df_copy = df.copy()
 
         # Add a column to calculate number of API calls within a 5 minute period
-        df["api_calls"] = df.apply(lambda row: get_num_api_calls(df, row["timestamp"], row['ip_address']), axis=1)
+        df["api_calls"] = df.apply(
+            lambda row: get_num_api_calls(df, row["timestamp"], row["ip_address"]),
+            axis=1,
+        )
 
         # df["label"] = df["ip_address"].apply(
         #     lambda x: 1 if x == "172.70.54.90" else 0
@@ -118,7 +123,10 @@ class NginxAI(object):
             ]
         )
 
-        test_data["api_calls"] = test_data.apply(lambda row: get_num_api_calls(df_copy, row["timestamp"], row['ip_address']), axis=1)
+        test_data["api_calls"] = test_data.apply(
+            lambda row: get_num_api_calls(df_copy, row["timestamp"], row["ip_address"]),
+            axis=1,
+        )
 
         for feature in categorical_features:
             test_data[feature] = np.searchsorted(
